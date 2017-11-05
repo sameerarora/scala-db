@@ -1,7 +1,9 @@
 package com.deutsche.train
 
 import java.lang.{IllegalArgumentException => IAE}
+
 import org.scalatest.{Matchers, WordSpec}
+import play.api.libs.json.Json
 
 
 class TimeSpec extends WordSpec with Matchers {
@@ -41,6 +43,22 @@ class TimeSpec extends WordSpec with Matchers {
   "ToString on Time" should {
     "return time in hh:mm format" in {
       Time(1, 40).toString shouldEqual "01:40"
+    }
+  }
+
+  "Calling fromJson" should {
+    "return None for an invalid json" in {
+      Time fromJson Json.obj() shouldBe None
+    }
+    "return Some wrapping a properly initialized Time for a valid JsonOject" in {
+      (Time fromJson Json.obj("hours" -> 9, "minutes" -> 30)) shouldEqual Some(Time(9, 30))
+    }
+  }
+
+  "Calling fromJson after toJson" should {
+    "return Some wrapping the original Time" in {
+      val time = Time(9, 30)
+      (Time fromJson (time.toJson)) shouldEqual Some(time)
     }
   }
 }
