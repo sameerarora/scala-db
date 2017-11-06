@@ -24,7 +24,7 @@ trait TrainHttpRoutes extends JsonSupport {
           entity(as[Train]) { train =>
             complete {
               TrainRepository.save(train)
-              s"Successfully Added Train ${train.number} to Route"
+              StatusCodes.Created -> s"Successfully Added Train ${train.number} to Route"
             }
           }
         } ~
@@ -40,10 +40,10 @@ trait TrainHttpRoutes extends JsonSupport {
           delete {
             complete {
               TrainRepository.delete(Integer.parseInt(trainId))
-              s"Successfully deleted Train $trainId"
+              StatusCodes.Accepted -> s"Train $trainId has been successfully marked for deletion"
             }
           }
-        }~
+        } ~
         path(Segment) { trainId =>
           get {
             complete {
